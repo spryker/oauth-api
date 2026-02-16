@@ -1,2 +1,7 @@
 parameters:
     level: 8
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # @Glue annotations for REST API documentation
+        -
+            identifier: phpDoc.parseError
