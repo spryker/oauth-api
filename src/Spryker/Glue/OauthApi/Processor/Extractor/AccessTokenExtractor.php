@@ -26,11 +26,6 @@ class AccessTokenExtractor implements AccessTokenExtractorInterface
         return $this->extractTokenData($glueRequestTransfer->getMeta()[OauthApiConfig::HEADER_AUTHORIZATION][0]);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
-     *
-     * @return bool
-     */
     public function isAuthorizationHeaderSet(GlueRequestTransfer $glueRequestTransfer): bool
     {
         return ($glueRequestTransfer->getMeta() &&

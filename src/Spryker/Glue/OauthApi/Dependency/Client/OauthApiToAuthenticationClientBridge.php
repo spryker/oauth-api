@@ -25,11 +25,6 @@ class OauthApiToAuthenticationClientBridge implements OauthApiToAuthenticationCl
         $this->authenticationClient = $authenticationClient;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\GlueAuthenticationRequestTransfer $glueAuthenticationRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\GlueAuthenticationResponseTransfer
-     */
     public function authenticate(GlueAuthenticationRequestTransfer $glueAuthenticationRequestTransfer): GlueAuthenticationResponseTransfer
     {
         return $this->authenticationClient->authenticate($glueAuthenticationRequestTransfer);

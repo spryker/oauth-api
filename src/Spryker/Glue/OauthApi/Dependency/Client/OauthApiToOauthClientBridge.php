@@ -25,11 +25,6 @@ class OauthApiToOauthClientBridge implements OauthApiToOauthClientInterface
         $this->oauthClient = $oauthClient;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\OauthAccessTokenValidationRequestTransfer $oauthAccessTokenValidationRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\OauthAccessTokenValidationResponseTransfer
-     */
     public function validateOauthAccessToken(
         OauthAccessTokenValidationRequestTransfer $oauthAccessTokenValidationRequestTransfer
     ): OauthAccessTokenValidationResponseTransfer {

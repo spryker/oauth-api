@@ -32,9 +32,6 @@ class CustomerRequestValidatorPluginTest extends Unit
      */
     protected $tester;
 
-    /**
-     * @return void
-     */
     public function testValidateReturnsTrueWithoutMeta(): void
     {
         //Act
@@ -44,9 +41,6 @@ class CustomerRequestValidatorPluginTest extends Unit
         $this->assertTrue($result->getIsValid());
     }
 
-    /**
-     * @return void
-     */
     public function testValidateReturnsTrueWithMeta(): void
     {
         //Arrange
@@ -59,9 +53,6 @@ class CustomerRequestValidatorPluginTest extends Unit
         $this->assertTrue($result->getIsValid());
     }
 
-    /**
-     * @return void
-     */
     public function testValidateReturnsTrueWithMetaAndRequestCustomerTransfer(): void
     {
         //Arrange
@@ -75,9 +66,6 @@ class CustomerRequestValidatorPluginTest extends Unit
         $this->assertTrue($result->getIsValid());
     }
 
-    /**
-     * @return void
-     */
     public function testValidateReturnsFalseWithMetaAndWithoutRequestCustomerTransfer(): void
     {
         //Arrange

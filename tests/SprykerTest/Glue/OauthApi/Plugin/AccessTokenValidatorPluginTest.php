@@ -40,9 +40,6 @@ class AccessTokenValidatorPluginTest extends Unit
      */
     protected $tester;
 
-    /**
-     * @return void
-     */
     public function testValidatorIsNotProtected(): void
     {
         //Act
@@ -52,9 +49,6 @@ class AccessTokenValidatorPluginTest extends Unit
         $this->assertTrue($result->getIsValid());
     }
 
-    /**
-     * @return void
-     */
     public function testValidatorEmptyAuth(): void
     {
         //Arrange
@@ -69,9 +63,6 @@ class AccessTokenValidatorPluginTest extends Unit
         $this->assertTrue($result->getIsValid());
     }
 
-    /**
-     * @return void
-     */
     public function testValidatorTokenNotValid(): void
     {
         //Arrange
@@ -97,9 +88,6 @@ class AccessTokenValidatorPluginTest extends Unit
         $this->assertSame(OauthApiConfig::RESPONSE_DETAIL_INVALID_ACCESS_TOKEN, $glueErrorTransfer->getMessage());
     }
 
-    /**
-     * @return void
-     */
     public function testValidatorTokenValid(): void
     {
         //Arrange

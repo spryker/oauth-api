@@ -26,9 +26,6 @@ use Spryker\Glue\OauthApi\Processor\Validator\CustomerRequestValidatorInterface;
  */
 class OauthApiFactory extends AbstractStorefrontApiFactory
 {
-    /**
-     * @return \Spryker\Glue\OauthApi\Processor\Validator\AccessTokenValidatorInterface
-     */
     public function createAccessTokenValidator(): AccessTokenValidatorInterface
     {
         return new AccessTokenValidator(
@@ -37,49 +34,31 @@ class OauthApiFactory extends AbstractStorefrontApiFactory
         );
     }
 
-    /**
-     * @return \Spryker\Glue\OauthApi\Dependency\Client\OauthApiToAuthenticationClientInterface
-     */
     public function getAuthenticationClient(): OauthApiToAuthenticationClientInterface
     {
         return $this->getProvidedDependency(OauthApiDependencyProvider::CLIENT_AUTHENTICATION);
     }
 
-    /**
-     * @return \Spryker\Glue\OauthApi\Dependency\Service\OauthApiToOauthServiceInterface
-     */
     public function getOauthService(): OauthApiToOauthServiceInterface
     {
         return $this->getProvidedDependency(OauthApiDependencyProvider::SERVICE_OAUTH);
     }
 
-    /**
-     * @return \Spryker\Glue\OauthApi\Dependency\Client\OauthApiToOauthClientInterface
-     */
     public function getOauthClient(): OauthApiToOauthClientInterface
     {
         return $this->getProvidedDependency(OauthApiDependencyProvider::CLIENT_OAUTH);
     }
 
-    /**
-     * @return \Spryker\Glue\OauthApi\Dependency\Service\OauthApiToUtilEncodingServiceInterface
-     */
     public function getUtilEncodingService(): OauthApiToUtilEncodingServiceInterface
     {
         return $this->getProvidedDependency(OauthApiDependencyProvider::SERVICE_UTIL_ENCODING);
     }
 
-    /**
-     * @return \Spryker\Glue\OauthApi\Processor\Extractor\AccessTokenExtractorInterface
-     */
     public function createAccessTokenExtractor(): AccessTokenExtractorInterface
     {
         return new AccessTokenExtractor();
     }
 
-    /**
-     * @return \Spryker\Glue\OauthApi\Processor\RequestBuilder\CustomerRequestBuilderInterface
-     */
     public function createCustomerRequestBuilder(): CustomerRequestBuilderInterface
     {
         return new CustomerRequestBuilder(
@@ -89,9 +68,6 @@ class OauthApiFactory extends AbstractStorefrontApiFactory
         );
     }
 
-    /**
-     * @return \Spryker\Glue\OauthApi\Processor\Validator\CustomerRequestValidatorInterface
-     */
     public function createCustomerRequestValidator(): CustomerRequestValidatorInterface
     {
         return new CustomerRequestValidator();

@@ -11,10 +11,5 @@ use Generated\Shared\Transfer\OauthAccessTokenDataTransfer;
 
 interface OauthApiToOauthServiceInterface
 {
-    /**
-     * @param string $accessToken
-     *
-     * @return \Generated\Shared\Transfer\OauthAccessTokenDataTransfer
-     */
     public function extractAccessTokenData(string $accessToken): OauthAccessTokenDataTransfer;
 }

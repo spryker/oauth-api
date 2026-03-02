@@ -15,11 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CustomerRequestValidator implements CustomerRequestValidatorInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\GlueRequestValidationTransfer
-     */
     public function validate(GlueRequestTransfer $glueRequestTransfer): GlueRequestValidationTransfer
     {
         $glueRequestValidationTransfer = new GlueRequestValidationTransfer();
@@ -39,11 +34,6 @@ class CustomerRequestValidator implements CustomerRequestValidatorInterface
         return $glueRequestValidationTransfer->setIsValid(true);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
-     *
-     * @return bool
-     */
     protected function headerAuthorizationExist(GlueRequestTransfer $glueRequestTransfer): bool
     {
         return $glueRequestTransfer->getMeta() &&

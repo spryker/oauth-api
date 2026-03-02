@@ -81,12 +81,6 @@ class TokenResourceController extends AbstractStorefrontApiController
         return $glueResponseTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\GlueAuthenticationResponseTransfer $glueAuthenticationResponseTransfer
-     * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\GlueResponseTransfer
-     */
     protected function mapAuthenticationAttributesToGlueResponseTransfer(
         GlueAuthenticationResponseTransfer $glueAuthenticationResponseTransfer,
         GlueRequestTransfer $glueRequestTransfer

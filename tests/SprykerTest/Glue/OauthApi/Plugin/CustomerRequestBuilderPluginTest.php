@@ -33,9 +33,6 @@ class CustomerRequestBuilderPluginTest extends Unit
      */
     protected $tester;
 
-    /**
-     * @return void
-     */
     public function testUserFinderWhenAuthorizationHeaderNotExist(): void
     {
         //Act
@@ -45,9 +42,6 @@ class CustomerRequestBuilderPluginTest extends Unit
         $this->assertEmpty($glueRequestTransfer->getRequestCustomer());
     }
 
-    /**
-     * @return void
-     */
     public function testUserFinderThrowExceptionWhenAccessTokenInvalid(): void
     {
         //Arrange
@@ -61,9 +55,6 @@ class CustomerRequestBuilderPluginTest extends Unit
         $this->assertEmpty($glueRequestTransfer->getRequestCustomer());
     }
 
-    /**
-     * @return void
-     */
     public function testUserFinderWithWrongAccessToken(): void
     {
         //Arrange
@@ -77,9 +68,6 @@ class CustomerRequestBuilderPluginTest extends Unit
         $this->assertEmpty($glueRequestTransfer->getRequestCustomer());
     }
 
-    /**
-     * @return void
-     */
     public function testUserFinderWhenAccessTokenIsValid(): void
     {
         //Arrange
@@ -95,11 +83,6 @@ class CustomerRequestBuilderPluginTest extends Unit
         $this->assertSame(25, $glueRequestTransfer->getRequestCustomer()->getSurrogateIdentifier());
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\GlueRequestTransfer
-     */
     protected function findCustomer(GlueRequestTransfer $glueRequestTransfer): GlueRequestTransfer
     {
         $accessTokenCustomerFinderPlugin = new CustomerRequestBuilderPlugin();
