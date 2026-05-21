@@ -36,7 +36,8 @@ class OauthApiToUtilEncodingServiceBridge implements OauthApiToUtilEncodingServi
             trigger_error('Param #2 `$assoc` must be `true` as return of type `object` is not accepted.', E_USER_DEPRECATED);
         }
 
-        /** @phpstan-var array<mixed>|null */
-        return $this->utilEncodingService->decodeJson($jsonValue, $assoc, $depth, $options);
+        $result = $this->utilEncodingService->decodeJson($jsonValue, $assoc, $depth, $options);
+
+        return is_array($result) ? $result : null;
     }
 }

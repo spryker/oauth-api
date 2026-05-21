@@ -29,6 +29,13 @@ class CustomerRequestBuilderPluginTest extends Unit
     public const HTTP_AUTHORIZATION = 'HTTP_AUTHORIZATION';
 
     /**
+     * JWT where sub claim is a plain numeric string, not a JSON-encoded object.
+     *
+     * @var string
+     */
+    protected const JWT_TOKEN_WITH_NON_JSON_OBJECT_SUB = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+    /**
      * @var \SprykerTest\Glue\OauthApi\OauthApiTester
      */
     protected $tester;
@@ -52,6 +59,18 @@ class CustomerRequestBuilderPluginTest extends Unit
 
         //Assert
         $this->assertIsObject($glueRequestTransfer);
+        $this->assertEmpty($glueRequestTransfer->getRequestCustomer());
+    }
+
+    public function testUserFinderReturnsEmptyRequestCustomerWhenJwtSubClaimIsNotJsonObject(): void
+    {
+        // Arrange
+        $glueRequestTransfer = (new GlueRequestTransfer())->setMeta(['authorization' => [0 => 'Bearer ' . static::JWT_TOKEN_WITH_NON_JSON_OBJECT_SUB]]);
+
+        // Act
+        $glueRequestTransfer = $this->findCustomer($glueRequestTransfer);
+
+        // Assert
         $this->assertEmpty($glueRequestTransfer->getRequestCustomer());
     }
 
