@@ -39,6 +39,8 @@ class OauthApiDependencyProvider extends AbstractBundleDependencyProvider
      */
     public const CLIENT_OAUTH = 'CLIENT_OAUTH';
 
+    public const string PLUGINS_ACCESS_TOKEN_VALIDATION_EXCLUDED_PATH_PATTERN_PROVIDER = 'PLUGINS_ACCESS_TOKEN_VALIDATION_EXCLUDED_PATH_PATTERN_PROVIDER';
+
     public function provideDependencies(Container $container): Container
     {
         $container = parent::provideDependencies($container);
@@ -46,6 +48,7 @@ class OauthApiDependencyProvider extends AbstractBundleDependencyProvider
         $container = $this->addOauthService($container);
         $container = $this->addUtilEncodingService($container);
         $container = $this->addOauthClient($container);
+        $container = $this->addAccessTokenValidationExcludedPathPatternProviderPlugins($container);
 
         return $container;
     }
@@ -90,5 +93,22 @@ class OauthApiDependencyProvider extends AbstractBundleDependencyProvider
         });
 
         return $container;
+    }
+
+    protected function addAccessTokenValidationExcludedPathPatternProviderPlugins(Container $container): Container
+    {
+        $container->set(static::PLUGINS_ACCESS_TOKEN_VALIDATION_EXCLUDED_PATH_PATTERN_PROVIDER, function (): array {
+            return $this->getAccessTokenValidationExcludedPathPatternProviderPlugins();
+        });
+
+        return $container;
+    }
+
+    /**
+     * @return list<\Spryker\Glue\OauthExtension\Dependency\Plugin\AccessTokenValidationExcludedPathPatternProviderPluginInterface>
+     */
+    protected function getAccessTokenValidationExcludedPathPatternProviderPlugins(): array
+    {
+        return [];
     }
 }
