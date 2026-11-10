@@ -13,6 +13,7 @@ use Generated\Shared\Transfer\OauthAccessTokenDataTransfer;
 use Spryker\Glue\OauthApi\Dependency\Service\OauthApiToOauthServiceInterface;
 use Spryker\Glue\OauthApi\Dependency\Service\OauthApiToUtilEncodingServiceInterface;
 use Spryker\Glue\OauthApi\Processor\Extractor\AccessTokenExtractorInterface;
+use Spryker\Glue\OauthApi\Processor\Matcher\ExcludedPathMatcherInterface;
 
 class CustomerRequestBuilder implements CustomerRequestBuilderInterface
 {
@@ -44,7 +45,8 @@ class CustomerRequestBuilder implements CustomerRequestBuilderInterface
     public function __construct(
         OauthApiToOauthServiceInterface $oauthService,
         OauthApiToUtilEncodingServiceInterface $utilEncodingService,
-        AccessTokenExtractorInterface $accessTokenExtractor
+        AccessTokenExtractorInterface $accessTokenExtractor,
+        protected ExcludedPathMatcherInterface $excludedPathMatcher
     ) {
         $this->oauthService = $oauthService;
         $this->utilEncodingService = $utilEncodingService;
@@ -53,6 +55,10 @@ class CustomerRequestBuilder implements CustomerRequestBuilderInterface
 
     public function buildRequest(GlueRequestTransfer $glueRequestTransfer): GlueRequestTransfer
     {
+        if ($this->excludedPathMatcher->isExcludedPath($glueRequestTransfer)) {
+            return $glueRequestTransfer;
+        }
+
         $oauthAccessTokenDataTransfer = $this->findCustomerByAccessToken($glueRequestTransfer);
 
         if (!$oauthAccessTokenDataTransfer || !$oauthAccessTokenDataTransfer->getOauthUserId()) {

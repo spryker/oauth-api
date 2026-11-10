@@ -15,6 +15,7 @@ use Generated\Shared\Transfer\OauthAccessTokenValidationResponseTransfer;
 use Spryker\Glue\OauthApi\Dependency\Client\OauthApiToOauthClientInterface;
 use Spryker\Glue\OauthApi\OauthApiConfig;
 use Spryker\Glue\OauthApi\Processor\Extractor\AccessTokenExtractorInterface;
+use Spryker\Glue\OauthApi\Processor\Matcher\ExcludedPathMatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class AccessTokenValidator implements AccessTokenValidatorInterface
@@ -31,7 +32,8 @@ class AccessTokenValidator implements AccessTokenValidatorInterface
 
     public function __construct(
         OauthApiToOauthClientInterface $oauthClient,
-        AccessTokenExtractorInterface $accessTokenExtractor
+        AccessTokenExtractorInterface $accessTokenExtractor,
+        protected ExcludedPathMatcherInterface $excludedPathMatcher
     ) {
         $this->oauthClient = $oauthClient;
         $this->accessTokenExtractor = $accessTokenExtractor;
@@ -40,6 +42,10 @@ class AccessTokenValidator implements AccessTokenValidatorInterface
     public function validate(GlueRequestTransfer $glueRequestTransfer): GlueRequestValidationTransfer
     {
         $glueRequestValidationTransfer = new GlueRequestValidationTransfer();
+
+        if ($this->excludedPathMatcher->isExcludedPath($glueRequestTransfer)) {
+            return $glueRequestValidationTransfer->setIsValid(true);
+        }
 
         if (!$this->accessTokenExtractor->isAuthorizationHeaderSet($glueRequestTransfer)) {
             return $glueRequestValidationTransfer->setIsValid(true);

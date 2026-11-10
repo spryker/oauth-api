@@ -9,6 +9,7 @@ namespace SprykerTest\Glue\OauthApi\Plugin;
 
 use Codeception\Test\Unit;
 use Generated\Shared\Transfer\GlueRequestTransfer;
+use Spryker\Glue\OauthApi\OauthApiFactory;
 use Spryker\Glue\OauthApi\Plugin\CustomerRequestBuilderPlugin;
 
 /**
@@ -34,6 +35,10 @@ class CustomerRequestBuilderPluginTest extends Unit
      * @var string
      */
     protected const JWT_TOKEN_WITH_NON_JSON_OBJECT_SUB = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+    protected const string STOREFRONT_ACCESS_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJmcm9udGVuZCIsImp0aSI6IjgyZTViYTc3ZGI3NTc0ZmQ0NTUzYTBhZDNjM2JlNzg5OTkzZjU1MjA3ZDQ0ZWFiYmI0YWNjYmE4OTYwODQzYzE2OGQwY2YzY2FhZDc2NTM0IiwiaWF0IjoxNjQ2MjM4ODg5LjQ0NTExODksIm5iZiI6MTY0NjIzODg4OS40NDUxMzM5LCJleHAiOjE2NDYyNjc2ODkuMzY1NjM5OSwic3ViIjoie1wiaWRfY29tcGFueV91c2VyXCI6XCI2NWI1OTFmNy1iN2Y1LTUwYjktOTMxZS03NDBmNjg2NDVjMjFcIixcImlkX2FnZW50XCI6bnVsbCxcImN1c3RvbWVyX3JlZmVyZW5jZVwiOlwiREUtLTMzXCIsXCJpZF9jdXN0b21lclwiOjI1LFwicGVybWlzc2lvbnNcIjp7XCJwZXJtaXNzaW9uc1wiOlt7XCJpZF9wZXJtaXNzaW9uXCI6MSxcImtleVwiOlwiUmVhZFNoYXJlZENhcnRQZXJtaXNzaW9uUGx1Z2luXCIsXCJjb25maWd1cmF0aW9uXCI6e1wiaWRfcXVvdGVfY29sbGVjdGlvblwiOltcIjI2XCJdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6XCJbXVwiLFwiaWRfY29tcGFueV9yb2xlXCI6bnVsbCxcImlzX2luZnJhc3RydWN0dXJhbFwiOm51bGx9LHtcImlkX3Blcm1pc3Npb25cIjoyLFwia2V5XCI6XCJXcml0ZVNoYXJlZENhcnRQZXJtaXNzaW9uUGx1Z2luXCIsXCJjb25maWd1cmF0aW9uXCI6e1wiaWRfcXVvdGVfY29sbGVjdGlvblwiOltcIjI2XCJdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6XCJbXVwiLFwiaWRfY29tcGFueV9yb2xlXCI6bnVsbCxcImlzX2luZnJhc3RydWN0dXJhbFwiOm51bGx9LHtcImlkX3Blcm1pc3Npb25cIjpudWxsLFwia2V5XCI6XCJSZWFkU2hvcHBpbmdMaXN0UGVybWlzc2lvblBsdWdpblwiLFwiY29uZmlndXJhdGlvblwiOntcImlkX3Nob3BwaW5nX2xpc3RfY29sbGVjdGlvblwiOltdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6W10sXCJpZF9jb21wYW55X3JvbGVcIjpudWxsLFwiaXNfaW5mcmFzdHJ1Y3R1cmFsXCI6bnVsbH0se1wiaWRfcGVybWlzc2lvblwiOm51bGwsXCJrZXlcIjpcIldyaXRlU2hvcHBpbmdMaXN0UGVybWlzc2lvblBsdWdpblwiLFwiY29uZmlndXJhdGlvblwiOntcImlkX3Nob3BwaW5nX2xpc3RfY29sbGVjdGlvblwiOltdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6W10sXCJpZF9jb21wYW55X3JvbGVcIjpudWxsLFwiaXNfaW5mcmFzdHJ1Y3R1cmFsXCI6bnVsbH1dfX0iLCJzY29wZXMiOlsiY3VzdG9tZXIiXX0.HqXr-6yL4xWaVsIeL5xsvRJ8j6YP6O3zBWIYGAKfd6GPsNajRFKH8b4hidoUXE5lxGHcnoSupRjdabMaRUq6EqgoEDZM4jFJApXAcM4I2TFvu_uRSJMRdfw2YhPdK6yaPnp4xHXO9wS-C4Si8xVovFLNZZGzaVDso1RCy8iWwFXvGTITxb-cOlXZr6Lry6lwF0YRTSHypN0EtXMBt9mllpExSObQ6AclEJ6HjF_CiAPkBNQvYQy4Gd62ODwhXRUBWSr2-pbu-wtLB1zG5snCvNpXDROYdjHFSTn8MvQ-Jnlzf6IrsjtBxRTiZzC-jaDaQGMzriT82vqVQ6VBfsqrhQ';
+
+    protected const string EXCLUDED_PATH_PATTERN = '^/excluded-resource/';
 
     /**
      * @var \SprykerTest\Glue\OauthApi\OauthApiTester
@@ -90,7 +95,7 @@ class CustomerRequestBuilderPluginTest extends Unit
     public function testUserFinderWhenAccessTokenIsValid(): void
     {
         //Arrange
-        $glueRequestTransfer = (new GlueRequestTransfer())->setMeta(['authorization' => [0 => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJmcm9udGVuZCIsImp0aSI6IjgyZTViYTc3ZGI3NTc0ZmQ0NTUzYTBhZDNjM2JlNzg5OTkzZjU1MjA3ZDQ0ZWFiYmI0YWNjYmE4OTYwODQzYzE2OGQwY2YzY2FhZDc2NTM0IiwiaWF0IjoxNjQ2MjM4ODg5LjQ0NTExODksIm5iZiI6MTY0NjIzODg4OS40NDUxMzM5LCJleHAiOjE2NDYyNjc2ODkuMzY1NjM5OSwic3ViIjoie1wiaWRfY29tcGFueV91c2VyXCI6XCI2NWI1OTFmNy1iN2Y1LTUwYjktOTMxZS03NDBmNjg2NDVjMjFcIixcImlkX2FnZW50XCI6bnVsbCxcImN1c3RvbWVyX3JlZmVyZW5jZVwiOlwiREUtLTMzXCIsXCJpZF9jdXN0b21lclwiOjI1LFwicGVybWlzc2lvbnNcIjp7XCJwZXJtaXNzaW9uc1wiOlt7XCJpZF9wZXJtaXNzaW9uXCI6MSxcImtleVwiOlwiUmVhZFNoYXJlZENhcnRQZXJtaXNzaW9uUGx1Z2luXCIsXCJjb25maWd1cmF0aW9uXCI6e1wiaWRfcXVvdGVfY29sbGVjdGlvblwiOltcIjI2XCJdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6XCJbXVwiLFwiaWRfY29tcGFueV9yb2xlXCI6bnVsbCxcImlzX2luZnJhc3RydWN0dXJhbFwiOm51bGx9LHtcImlkX3Blcm1pc3Npb25cIjoyLFwia2V5XCI6XCJXcml0ZVNoYXJlZENhcnRQZXJtaXNzaW9uUGx1Z2luXCIsXCJjb25maWd1cmF0aW9uXCI6e1wiaWRfcXVvdGVfY29sbGVjdGlvblwiOltcIjI2XCJdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6XCJbXVwiLFwiaWRfY29tcGFueV9yb2xlXCI6bnVsbCxcImlzX2luZnJhc3RydWN0dXJhbFwiOm51bGx9LHtcImlkX3Blcm1pc3Npb25cIjpudWxsLFwia2V5XCI6XCJSZWFkU2hvcHBpbmdMaXN0UGVybWlzc2lvblBsdWdpblwiLFwiY29uZmlndXJhdGlvblwiOntcImlkX3Nob3BwaW5nX2xpc3RfY29sbGVjdGlvblwiOltdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6W10sXCJpZF9jb21wYW55X3JvbGVcIjpudWxsLFwiaXNfaW5mcmFzdHJ1Y3R1cmFsXCI6bnVsbH0se1wiaWRfcGVybWlzc2lvblwiOm51bGwsXCJrZXlcIjpcIldyaXRlU2hvcHBpbmdMaXN0UGVybWlzc2lvblBsdWdpblwiLFwiY29uZmlndXJhdGlvblwiOntcImlkX3Nob3BwaW5nX2xpc3RfY29sbGVjdGlvblwiOltdfSxcImNvbmZpZ3VyYXRpb25fc2lnbmF0dXJlXCI6W10sXCJpZF9jb21wYW55X3JvbGVcIjpudWxsLFwiaXNfaW5mcmFzdHJ1Y3R1cmFsXCI6bnVsbH1dfX0iLCJzY29wZXMiOlsiY3VzdG9tZXIiXX0.HqXr-6yL4xWaVsIeL5xsvRJ8j6YP6O3zBWIYGAKfd6GPsNajRFKH8b4hidoUXE5lxGHcnoSupRjdabMaRUq6EqgoEDZM4jFJApXAcM4I2TFvu_uRSJMRdfw2YhPdK6yaPnp4xHXO9wS-C4Si8xVovFLNZZGzaVDso1RCy8iWwFXvGTITxb-cOlXZr6Lry6lwF0YRTSHypN0EtXMBt9mllpExSObQ6AclEJ6HjF_CiAPkBNQvYQy4Gd62ODwhXRUBWSr2-pbu-wtLB1zG5snCvNpXDROYdjHFSTn8MvQ-Jnlzf6IrsjtBxRTiZzC-jaDaQGMzriT82vqVQ6VBfsqrhQ']]);
+        $glueRequestTransfer = (new GlueRequestTransfer())->setMeta(['authorization' => [0 => 'Bearer ' . static::STOREFRONT_ACCESS_TOKEN]]);
 
         //Act
         $glueRequestTransfer = $this->findCustomer($glueRequestTransfer);
@@ -102,10 +107,54 @@ class CustomerRequestBuilderPluginTest extends Unit
         $this->assertSame(25, $glueRequestTransfer->getRequestCustomer()->getSurrogateIdentifier());
     }
 
+    public function testGivenAnExcludedPathWhenTheRequestCarriesAnAccessTokenThenNoRequestCustomerIsBuilt(): void
+    {
+        // Arrange
+        $glueRequestTransfer = (new GlueRequestTransfer())
+            ->setPath('/excluded-resource/item')
+            ->setMeta(['authorization' => [0 => 'Bearer ' . static::STOREFRONT_ACCESS_TOKEN]]);
+
+        // Act
+        $glueRequestTransfer = $this->createCustomerRequestBuilderPluginExcludingPaths([static::EXCLUDED_PATH_PATTERN])->build($glueRequestTransfer);
+
+        // Assert
+        $this->assertNull($glueRequestTransfer->getRequestCustomer());
+    }
+
+    public function testGivenAPathOutsideTheExcludedPatternsWhenTheRequestCarriesAnAccessTokenThenTheRequestCustomerIsBuilt(): void
+    {
+        // Arrange
+        $glueRequestTransfer = (new GlueRequestTransfer())
+            ->setPath('/carts/excluded-resource/item')
+            ->setMeta(['authorization' => [0 => 'Bearer ' . static::STOREFRONT_ACCESS_TOKEN]]);
+
+        // Act
+        $glueRequestTransfer = $this->createCustomerRequestBuilderPluginExcludingPaths([static::EXCLUDED_PATH_PATTERN])->build($glueRequestTransfer);
+
+        // Assert
+        $this->assertSame('DE--33', $glueRequestTransfer->getRequestCustomerOrFail()->getNaturalIdentifier());
+        $this->assertSame(25, $glueRequestTransfer->getRequestCustomerOrFail()->getSurrogateIdentifier());
+    }
+
     protected function findCustomer(GlueRequestTransfer $glueRequestTransfer): GlueRequestTransfer
     {
         $accessTokenCustomerFinderPlugin = new CustomerRequestBuilderPlugin();
 
         return $accessTokenCustomerFinderPlugin->build($glueRequestTransfer);
+    }
+
+    /**
+     * @param list<string> $excludedPathPatterns
+     */
+    protected function createCustomerRequestBuilderPluginExcludingPaths(array $excludedPathPatterns): CustomerRequestBuilderPlugin
+    {
+        /** @var \Spryker\Glue\OauthApi\OauthApiConfig $oauthApiConfig */
+        $oauthApiConfig = $this->tester->mockConfigMethod('getAccessTokenValidationExcludedPathPatterns', $excludedPathPatterns);
+        $oauthApiFactory = new OauthApiFactory();
+        $oauthApiFactory->setConfig($oauthApiConfig);
+        $customerRequestBuilderPlugin = new CustomerRequestBuilderPlugin();
+        $customerRequestBuilderPlugin->setFactory($oauthApiFactory);
+
+        return $customerRequestBuilderPlugin;
     }
 }

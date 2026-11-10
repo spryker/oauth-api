@@ -20,6 +20,7 @@
         <property name="resource" type="GlueResource" description="A data entity in a REST API."/>
         <property name="meta" type="array" associative="true" singular="meta" description="A collection of metadata."/>
         <property name="httpRequestAttributes" type="array" associative="true" singular="httpRequestAttribute" description="Attributes from an HTTP request."/>
+        <property name="path" type="string" description="The path for an API endpoint or a file."/>
     </transfer>
 
     <transfer name="GlueRequestCustomer">

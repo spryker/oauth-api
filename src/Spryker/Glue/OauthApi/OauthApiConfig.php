@@ -80,4 +80,22 @@ class OauthApiConfig extends AbstractBundleConfig
     {
         return false;
     }
+
+    /**
+     * Specification:
+     * - Returns regular expressions, without delimiters, for request paths whose Authorization header another authenticator validates.
+     * - Patterns are matched like a Symfony firewall `pattern`: against the URL-decoded path, with the `s` modifier.
+     * - A pattern must start with `^`; a pattern that does not, or that is not a valid regular expression, is ignored and logged.
+     * - A matching path gets no storefront token validation and no request customer; every pattern must be covered by another firewall, or the path must be public.
+     * - The access token and customer request validators accept a request on a matching path without validating its token.
+     * - The customer request builder builds no request customer from the token of a request on a matching path.
+     *
+     * @api
+     *
+     * @return list<string>
+     */
+    public function getAccessTokenValidationExcludedPathPatterns(): array
+    {
+        return [];
+    }
 }

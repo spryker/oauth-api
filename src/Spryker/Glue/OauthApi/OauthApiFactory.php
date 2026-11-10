@@ -14,6 +14,8 @@ use Spryker\Glue\OauthApi\Dependency\Service\OauthApiToOauthServiceInterface;
 use Spryker\Glue\OauthApi\Dependency\Service\OauthApiToUtilEncodingServiceInterface;
 use Spryker\Glue\OauthApi\Processor\Extractor\AccessTokenExtractor;
 use Spryker\Glue\OauthApi\Processor\Extractor\AccessTokenExtractorInterface;
+use Spryker\Glue\OauthApi\Processor\Matcher\ExcludedPathMatcher;
+use Spryker\Glue\OauthApi\Processor\Matcher\ExcludedPathMatcherInterface;
 use Spryker\Glue\OauthApi\Processor\RequestBuilder\CustomerRequestBuilder;
 use Spryker\Glue\OauthApi\Processor\RequestBuilder\CustomerRequestBuilderInterface;
 use Spryker\Glue\OauthApi\Processor\Validator\AccessTokenValidator;
@@ -31,6 +33,7 @@ class OauthApiFactory extends AbstractStorefrontApiFactory
         return new AccessTokenValidator(
             $this->getOauthClient(),
             $this->createAccessTokenExtractor(),
+            $this->createExcludedPathMatcher(),
         );
     }
 
@@ -65,11 +68,25 @@ class OauthApiFactory extends AbstractStorefrontApiFactory
             $this->getOauthService(),
             $this->getUtilEncodingService(),
             $this->createAccessTokenExtractor(),
+            $this->createExcludedPathMatcher(),
         );
     }
 
     public function createCustomerRequestValidator(): CustomerRequestValidatorInterface
     {
-        return new CustomerRequestValidator();
+        return new CustomerRequestValidator($this->createExcludedPathMatcher());
+    }
+
+    public function createExcludedPathMatcher(): ExcludedPathMatcherInterface
+    {
+        return new ExcludedPathMatcher($this->getConfig(), $this->getAccessTokenValidationExcludedPathPatternProviderPlugins());
+    }
+
+    /**
+     * @return list<\Spryker\Glue\OauthExtension\Dependency\Plugin\AccessTokenValidationExcludedPathPatternProviderPluginInterface>
+     */
+    public function getAccessTokenValidationExcludedPathPatternProviderPlugins(): array
+    {
+        return $this->getProvidedDependency(OauthApiDependencyProvider::PLUGINS_ACCESS_TOKEN_VALIDATION_EXCLUDED_PATH_PATTERN_PROVIDER);
     }
 }

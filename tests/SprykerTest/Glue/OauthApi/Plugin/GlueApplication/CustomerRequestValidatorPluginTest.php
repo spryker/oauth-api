@@ -11,6 +11,7 @@ use Codeception\Test\Unit;
 use Generated\Shared\Transfer\GlueRequestCustomerTransfer;
 use Generated\Shared\Transfer\GlueRequestTransfer;
 use Spryker\Glue\OauthApi\OauthApiConfig;
+use Spryker\Glue\OauthApi\OauthApiFactory;
 use Spryker\Glue\OauthApi\Plugin\GlueApplication\CustomerRequestValidatorPlugin;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,6 +32,8 @@ class CustomerRequestValidatorPluginTest extends Unit
      * @var \SprykerTest\Glue\OauthApi\OauthApiTester
      */
     protected $tester;
+
+    protected const string EXCLUDED_PATH_PATTERN = '^/excluded-resource/';
 
     public function testValidateReturnsTrueWithoutMeta(): void
     {
@@ -80,5 +83,49 @@ class CustomerRequestValidatorPluginTest extends Unit
         $this->assertSame(OauthApiConfig::RESPONSE_CODE_ACCESS_CODE_INVALID, $glueErrorTransfer->getCode());
         $this->assertSame(Response::HTTP_BAD_REQUEST, $glueErrorTransfer->getStatus());
         $this->assertSame(OauthApiConfig::RESPONSE_DETAIL_INVALID_ACCESS_TOKEN, $glueErrorTransfer->getMessage());
+    }
+
+    public function testGivenAnExcludedPathWhenNoCustomerIsResolvedFromTheTokenThenTheRequestIsValid(): void
+    {
+        // Arrange
+        $glueRequestTransfer = (new GlueRequestTransfer())
+            ->setPath('/excluded-resource/item')
+            ->setMeta(['authorization' => [0 => 'xxxx']]);
+
+        // Act
+        $glueRequestValidationTransfer = $this->createCustomerRequestValidatorPluginExcludingPaths([static::EXCLUDED_PATH_PATTERN])->validate($glueRequestTransfer);
+
+        // Assert
+        $this->assertTrue($glueRequestValidationTransfer->getIsValid());
+    }
+
+    public function testGivenAPathOutsideTheExcludedPatternsWhenNoCustomerIsResolvedFromTheTokenThenTheRequestIsInvalid(): void
+    {
+        // Arrange
+        $glueRequestTransfer = (new GlueRequestTransfer())
+            ->setPath('/carts/excluded-resource/item')
+            ->setMeta(['authorization' => [0 => 'xxxx']]);
+
+        // Act
+        $glueRequestValidationTransfer = $this->createCustomerRequestValidatorPluginExcludingPaths([static::EXCLUDED_PATH_PATTERN])->validate($glueRequestTransfer);
+
+        // Assert
+        $this->assertFalse($glueRequestValidationTransfer->getIsValid());
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $glueRequestValidationTransfer->getStatus());
+    }
+
+    /**
+     * @param list<string> $excludedPathPatterns
+     */
+    protected function createCustomerRequestValidatorPluginExcludingPaths(array $excludedPathPatterns): CustomerRequestValidatorPlugin
+    {
+        /** @var \Spryker\Glue\OauthApi\OauthApiConfig $oauthApiConfig */
+        $oauthApiConfig = $this->tester->mockConfigMethod('getAccessTokenValidationExcludedPathPatterns', $excludedPathPatterns);
+        $oauthApiFactory = new OauthApiFactory();
+        $oauthApiFactory->setConfig($oauthApiConfig);
+        $customerRequestValidatorPlugin = new CustomerRequestValidatorPlugin();
+        $customerRequestValidatorPlugin->setFactory($oauthApiFactory);
+
+        return $customerRequestValidatorPlugin;
     }
 }

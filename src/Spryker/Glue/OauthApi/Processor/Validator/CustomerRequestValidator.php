@@ -11,13 +11,22 @@ use Generated\Shared\Transfer\GlueErrorTransfer;
 use Generated\Shared\Transfer\GlueRequestTransfer;
 use Generated\Shared\Transfer\GlueRequestValidationTransfer;
 use Spryker\Glue\OauthApi\OauthApiConfig;
+use Spryker\Glue\OauthApi\Processor\Matcher\ExcludedPathMatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomerRequestValidator implements CustomerRequestValidatorInterface
 {
+    public function __construct(protected ExcludedPathMatcherInterface $excludedPathMatcher)
+    {
+    }
+
     public function validate(GlueRequestTransfer $glueRequestTransfer): GlueRequestValidationTransfer
     {
         $glueRequestValidationTransfer = new GlueRequestValidationTransfer();
+
+        if ($this->excludedPathMatcher->isExcludedPath($glueRequestTransfer)) {
+            return $glueRequestValidationTransfer->setIsValid(true);
+        }
 
         if ($this->headerAuthorizationExist($glueRequestTransfer) && $glueRequestTransfer->getRequestCustomer() === null) {
             return $glueRequestValidationTransfer
